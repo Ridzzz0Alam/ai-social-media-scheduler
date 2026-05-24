@@ -45,9 +45,8 @@ const AppSidebar = () => {
                       tooltip={item.name}
                       >
                         <Link href={item.href}>
-                          <item.icon />
-                          <span>{item.name}</span>
-
+                          <item.icon className="size-4"/>
+                          <span className="text-[14.5px]">{item.name}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
