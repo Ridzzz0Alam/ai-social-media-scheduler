@@ -1,7 +1,8 @@
 import Logo from '@/components/logo';
-import { Sidebar, SidebarHeader, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
-import { Calendar, CreditCard, Lightbulb, Settings } from 'lucide-react';
+import { Calendar, CreditCard, Lightbulb, Plus, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 
@@ -25,6 +26,18 @@ const AppSidebar = () => {
         <Logo hideName={isCollapsed}/>
         <SidebarTrigger className="hidden md:flex -mx-8 mb-0"/>
       </div>
+      <Button className="mt-4 w-full"
+      size={isCollapsed ? "icon": "lg"}
+      >
+        <Plus className="size-4"/>
+        {!isCollapsed && <span>New Post</span>}
+        </Button>
+        <SidebarHeader>
+          <SidebarContent className={cn(!isCollapsed && "px-2")}>
+
+
+          </SidebarContent>
+        </SidebarHeader>
     </Sidebar>
   )
 }
