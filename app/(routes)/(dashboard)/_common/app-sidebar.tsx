@@ -1,8 +1,9 @@
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Sidebar, SidebarContent, SidebarHeader, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { Calendar, CreditCard, Lightbulb, Plus, Settings } from 'lucide-react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 
@@ -34,8 +35,26 @@ const AppSidebar = () => {
         </Button>
         <SidebarHeader>
           <SidebarContent className={cn(!isCollapsed && "px-2")}>
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {mainNav.map((item) =>(
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton asChild
+                      isActive={pathname === item.href}
+                      tooltip={item.name}
+                      >
+                        <Link href={item.href}>
+                          <item.icon />
+                          <span>{item.name}</span>
 
-
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
           </SidebarContent>
         </SidebarHeader>
     </Sidebar>
