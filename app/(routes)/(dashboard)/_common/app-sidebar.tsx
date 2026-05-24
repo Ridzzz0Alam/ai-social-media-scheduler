@@ -1,10 +1,11 @@
+"use client"
+import { usePathname } from 'next/navigation';
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { Calendar, CreditCard, Lightbulb, Plus, Settings } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 
 const mainNav = [
