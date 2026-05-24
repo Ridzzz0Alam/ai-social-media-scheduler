@@ -1,5 +1,4 @@
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { Sidebar } from 'lucide-react';
 import React from 'react'
 import AppSidebar from './_common/app-sidebar';
 
