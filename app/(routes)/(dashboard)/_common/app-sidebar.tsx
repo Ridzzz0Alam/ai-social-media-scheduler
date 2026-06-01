@@ -86,26 +86,18 @@ const AppSidebar = () => {
               <Skeleton className="h-4 w-full" />   
             </div>
           ) : (
-            <SidebarGroup className={cn(!isCollapsed && "px-1")}>
-              <SidebarGroupLabel className='text-sm'>Unconnected Channels</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-              {limitedChannels.map((channel: any) => (
+            limitedChannels.map((channel: any) => {
+              return (
                 <SidebarMenuItem key={channel.id}>
-                  <SidebarMenuButton
-                    asChild
-                    tooltip={channel.name}
-                  >
+                  <SidebarMenuButton>
                     <Link href={`/channels/${channel.id}`}>
                       <span className="text-[14.5px]">{channel.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-         </SidebarGroup>
-         )} 
+              )
+            })
+          )} 
       </SidebarContent>
     </Sidebar>
   );
