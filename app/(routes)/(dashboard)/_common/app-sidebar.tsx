@@ -8,6 +8,8 @@ import { Calendar, CreditCard, Lightbulb, Plus, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getChannelIcon } from '@/constants/channels';
+import { ChannelType } from '@/types/channel.type';
 
 const mainNav = [
   { name: "Ideas", href: "/ideas", icon: Lightbulb },
@@ -30,7 +32,7 @@ const AppSidebar = () => {
     },
   })
 
-  const channels = channelsData?.channels || [];
+  const channels = (channelsData?.channels || []) as ChannelType[];
   const unconnectedChannels = channels.filter((channel: any) => !channel.connected);
 
   const connectedCount = channelsData?.connectedCount || 0; 
@@ -87,6 +89,7 @@ const AppSidebar = () => {
             </div>
           ) : (
             limitedChannels.map((channel: any) => {
+              const icon = getChannelIcon(channel.type)
               return (
                 <SidebarMenuItem key={channel.id}>
                   <SidebarMenuButton>
