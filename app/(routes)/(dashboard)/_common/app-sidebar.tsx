@@ -13,6 +13,7 @@ import { getChannelIcon, getChannelUrl } from '@/constants/channels';
 import { ChannelType } from '@/types/channel.type';
 import { PlusSignIcon } from '@hugeicons/core-free-icons';
 import { UserButton } from '@clerk/nextjs';
+import ChannelAvatar from '@/components/channel-avatar';
 
 
 const mainNav = [
@@ -112,7 +113,7 @@ const AppSidebar = () => {
                       className="w-full flex items-center gap-2"
                       type={channel.type}
                       color={channel.color}
-                      profileImage={channel.profileImage}
+                      profileImage={channel.profile_image}
                       name={!isCollapsed ? (channel.handle || channel.name) : ""}
                       />
                     </a>
