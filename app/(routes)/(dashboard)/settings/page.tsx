@@ -7,6 +7,7 @@ import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import ChannelsTab from '@/components/settings/channels-tab'
 
 const SettingsPage = () => {
   const { user } = useUser()
@@ -79,7 +80,7 @@ const SettingsPage = () => {
                   </CardContent>
                 </Card>
             </TabsContent>
-                        
+
             <TabsContent value="channels"> 
               <ChannelsTab/>
             </TabsContent>
