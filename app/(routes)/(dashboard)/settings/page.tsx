@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Layers, Palette, User } from 'lucide-react'
 import { useUser } from '@clerk/nextjs'
 import { useTheme } from 'next-themes'
+import Image from 'next/image'
 
 const SettingsPage = () => {
   const { user } = useUser()
@@ -42,7 +43,24 @@ const SettingsPage = () => {
                   </CardDescription>  
                   <CardContent>
                     <div className='flex items-center gap-4'>
-                      {}
+                      {user?.imageUrl ? (
+                        <Image
+                        src={user.imageUrl}
+                        alt="User Image"
+                        className='h-16 w-16 rounded-full'
+                        width={64}
+                        height={64}
+                        />
+                      ) : (
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                          <User className='size-8 text-muted-foreground' />
+                        </div>
+                      )}
+
+                      <div>
+                        <p className="font-medium">{user?.fullName || "No name set"}</p>
+                        <p className="text-sm text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
+                      </div>
                     </div>
                   </CardContent>
                 </CardHeader>
