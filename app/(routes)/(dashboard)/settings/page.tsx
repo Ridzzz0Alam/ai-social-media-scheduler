@@ -5,6 +5,7 @@ import { UserProfile, useUser } from '@clerk/nextjs'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 
 const SettingsPage = () => {
   const { user } = useUser()
@@ -96,11 +97,15 @@ const SettingsPage = () => {
                         Toogle between light and dark theme
                       </p>
                     </div>
+                    <Switch 
+                    id="theme"
+                    checked={theme === 'dark'}
+                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                    />
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
-
           </Tabs>
         </div>
       </div>
