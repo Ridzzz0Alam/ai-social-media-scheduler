@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getChannelIcon } from '@/constants/channels';
 import { ChannelType } from '@/types/channel.type';
 import { PlusSignIcon } from '@hugeicons/core-free-icons';
+import { UserButton } from '@clerk/nextjs';
 
 
 const mainNav = [
@@ -37,6 +38,7 @@ const AppSidebar = () => {
 
   const channels = (channelsData?.channels || []) as ChannelType[];
   const unconnectedChannels = channels.filter((channel: any) => !channel.connected);
+  const connectedChannels = channels.filter((channel: any) => channel.connected);
 
   const connectedCount = channelsData?.connectedCount || 0; 
   const totalChannels = channelsData?.totalChannels || 0;
@@ -81,6 +83,60 @@ const AppSidebar = () => {
         </SidebarGroup>
 
          {/* //connected channels section */}
+         {connectedChannels.length > 0 && ( 
+          <SidebarGroup className={cn(isCollapsed && "px-1")}>
+          <SidebarGroupLabel>Connect Channels</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {isPending ? (
+            <div className="flex items-center justify-center py-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />   
+            </div>
+          ) : (
+            <>
+            {limitedChannels.map((channel: ChannelType) => {
+              const icon = getChannelIcon(channel.type)
+              return (
+                <SidebarMenuItem key={channel.id}>
+                  <SidebarMenuButton asChild
+                  tooltip={`Connect ${channel.name}`}
+                  >
+                    <button
+                    className='w-full flex items-center gap-2'
+                    >
+                      <span className="text-[14.5px]">
+                        <div>
+                          {
+                            icon?(
+                              <HugeiconsIcon icon={icon} color="currentColor"
+                              className='text-white! size-6! p-1 rounded-sm'
+                              style={{background: channel.color}}
+                              />
+                            ) : null
+                          }
+                          <div className={`absolute -right-1 bottom-0 p-0.5
+                            bg-white dark:bg-background rounded-xs
+                            `}>
+                              <HugeiconsIcon icon={PlusSignIcon} className='size-2!' />
+                          </div>
+                        </div>
+                      </span>
+                      <span className="truncate">{channel.name}</span>
+                    </button>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            })}
+            </>
+            )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+         </SidebarGroup>
+         )}
+
 
          {/* //unconnected channels section */}
          <SidebarGroup className={cn(isCollapsed && "px-1")}>
@@ -146,7 +202,22 @@ const AppSidebar = () => {
          </SidebarGroup>  
       </SidebarContent>
       <SidebarFooter>
-
+        <div className='mb-3 text-xs text-muted-foreground'>
+          <span>
+            {connectedCount}/{totalChannels} channels connected
+          </span>
+        </div>
+        <div>
+          <UserButton
+          showName={false}
+          appearance={{
+            elements:{
+              avatarBox: "h-8 w-8"
+            },
+          }}
+          />
+          <span className='text-sm'></span>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
