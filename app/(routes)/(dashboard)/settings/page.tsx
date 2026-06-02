@@ -1,9 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Layers, Palette, User } from 'lucide-react'
-import { useUser } from '@clerk/nextjs'
+import { UserProfile, useUser } from '@clerk/nextjs'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
+import { Label } from '@/components/ui/label'
 
 const SettingsPage = () => {
   const { user } = useUser()
@@ -40,7 +41,8 @@ const SettingsPage = () => {
                   </CardTitle>
                   <CardDescription>
                     Manage your account information
-                  </CardDescription>  
+                  </CardDescription> 
+                </CardHeader>    
                   <CardContent>
                     <div className='flex items-center gap-4'>
                       {user?.imageUrl ? (
@@ -61,13 +63,43 @@ const SettingsPage = () => {
                         <p className="font-medium">{user?.fullName || "No name set"}</p>
                         <p className="text-sm text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
                       </div>
+                      <div>
+                        <UserProfile 
+                        appearance={{
+                          elements: {
+                            rootBox: "w-full",
+                            card: "border-0 shadow-none",
+                          },
+                        }}
+                        />
+                      </div>
                     </div>
                   </CardContent>
-                </CardHeader>
-              </Card>
+                </Card>
             </TabsContent>
 
+            <TabsContent value="channels"> 
+              <ChannelsTab/>
+            </TabsContent>
 
+            <TabsContent value="appearance">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Appearance</CardTitle>
+                  <CardDescription>Customize how Ridz AI looks for you</CardDescription>
+                </CardHeader>
+                <CardContent className='space-y-6'>
+                  <div className='flex items-center justify-between'>
+                    <div className='space-y-0.5'>
+                      <Label htmlFor="dark-mode">Dark Mode</Label>
+                      <p>
+                        Toogle between light and dark theme
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
           </Tabs>
         </div>
