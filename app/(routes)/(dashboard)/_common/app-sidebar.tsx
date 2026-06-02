@@ -1,5 +1,6 @@
 "use client"
 import { usePathname } from 'next/navigation';
+import { HugeiconsIcon } from '@hugeicons/react';
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
@@ -10,6 +11,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getChannelIcon } from '@/constants/channels';
 import { ChannelType } from '@/types/channel.type';
+import { PlusSignIcon } from '@hugeicons/core-free-icons';
+
 
 const mainNav = [
   { name: "Ideas", href: "/ideas", icon: Lightbulb },
@@ -88,14 +91,33 @@ const AppSidebar = () => {
               <Skeleton className="h-4 w-full" />   
             </div>
           ) : (
-            limitedChannels.map((channel: any) => {
+            limitedChannels.map((channel: ChannelType) => {
               const icon = getChannelIcon(channel.type)
               return (
                 <SidebarMenuItem key={channel.id}>
-                  <SidebarMenuButton>
-                    <Link href={`/channels/${channel.id}`}>
-                      <span className="text-[14.5px]">{channel.name}</span>
-                    </Link>
+                  <SidebarMenuButton asChild
+                  tooltip={`Connect ${channel.name}`}
+                  >
+                    <button
+                    className='w-full flex items-center gap-2'
+                    >
+                      <span className="text-[14.5px]">
+                        <div>
+                          {
+                            icon?(
+                              <HugeiconsIcon icon={icon} color="currentColor"
+                              style={{background: channel.color}}
+                              />
+                            ) : null
+                          }
+                          <div className={`absolute -right-1 bottom-0 p-0.5
+                            bg-white dark:bg-background rounded-xs
+                            `}>
+                              <HugeiconsIcon icon={PlusSignIcon} size={12} />
+                          </div>
+                        </div>
+                      </span>
+                    </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )
