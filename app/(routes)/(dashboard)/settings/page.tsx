@@ -1,3 +1,4 @@
+"use client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Layers, Palette, User } from 'lucide-react'
@@ -18,7 +19,7 @@ const SettingsPage = () => {
         </div>
 
         <div>
-          <Tabs className='channels'>
+          <Tabs defaultValue='channels'>
             <div className='mb-6 w-full border-b'>
               <TabsList variant="line" className="w-fit space-x-4 group-data-horizontal/tabs:h-12"
               >
@@ -64,7 +65,8 @@ const SettingsPage = () => {
                         <p className="font-medium">{user?.fullName || "No name set"}</p>
                         <p className="text-sm text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
                       </div>
-                      <div>
+                    </div>
+                    <div className='mt-6'>
                         <UserProfile 
                         appearance={{
                           elements: {
@@ -74,11 +76,10 @@ const SettingsPage = () => {
                         }}
                         />
                       </div>
-                    </div>
                   </CardContent>
                 </Card>
             </TabsContent>
-
+                        
             <TabsContent value="channels"> 
               <ChannelsTab/>
             </TabsContent>
@@ -94,11 +95,11 @@ const SettingsPage = () => {
                     <div className='space-y-0.5'>
                       <Label htmlFor="dark-mode">Dark Mode</Label>
                       <p>
-                        Toogle between light and dark theme
+                        Toggle between light and dark theme
                       </p>
                     </div>
                     <Switch 
-                    id="theme"
+                    id="dark-mode"
                     checked={theme === 'dark'}
                     onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
                     />
