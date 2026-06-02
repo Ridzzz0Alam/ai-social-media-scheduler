@@ -1,8 +1,12 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Layers, Palette, User } from 'lucide-react'
-import React from 'react'
+import { useUser } from '@clerk/nextjs'
+import { useTheme } from 'next-themes'
 
 const SettingsPage = () => {
+  const { user } = useUser()
+  const { theme, setTheme } = useTheme()
   return (
     <div className='w-full'>
       <div className='max-w-5xl mx-auto w-full h-full'>
@@ -26,6 +30,25 @@ const SettingsPage = () => {
                   Appearance</TabsTrigger>
               </TabsList>
             </div>
+
+            <TabsContent value="profile">
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    Your Profile
+                  </CardTitle>
+                  <CardDescription>
+                    Manage your account information
+                  </CardDescription>  
+                  <CardContent>
+                    <div className='flex items-center gap-4'>
+                      {}
+                    </div>
+                  </CardContent>
+                </CardHeader>
+              </Card>
+            </TabsContent>
+
 
 
           </Tabs>
