@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import { HugeiconsIcon } from '@hugeicons/react';
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { Calendar, CreditCard, Lightbulb, Plus, Settings } from 'lucide-react';
 import Link from 'next/link';
@@ -83,7 +83,11 @@ const AppSidebar = () => {
          {/* //connected channels section */}
 
          {/* //unconnected channels section */}
-         {isPending ? (
+         <SidebarGroup className={cn(isCollapsed && "px-1")}>
+          <SidebarGroupLabel>Connect Channels</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {isPending ? (
             <div className="flex items-center justify-center py-4">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-full" />
@@ -91,7 +95,8 @@ const AppSidebar = () => {
               <Skeleton className="h-4 w-full" />   
             </div>
           ) : (
-            limitedChannels.map((channel: ChannelType) => {
+            <>
+            {limitedChannels.map((channel: ChannelType) => {
               const icon = getChannelIcon(channel.type)
               return (
                 <SidebarMenuItem key={channel.id}>
@@ -106,6 +111,7 @@ const AppSidebar = () => {
                           {
                             icon?(
                               <HugeiconsIcon icon={icon} color="currentColor"
+                              className='text-white! size-6! p-1 rounded-sm'
                               style={{background: channel.color}}
                               />
                             ) : null
@@ -113,17 +119,35 @@ const AppSidebar = () => {
                           <div className={`absolute -right-1 bottom-0 p-0.5
                             bg-white dark:bg-background rounded-xs
                             `}>
-                              <HugeiconsIcon icon={PlusSignIcon} size={12} />
+                              <HugeiconsIcon icon={PlusSignIcon} className='size-2!' />
                           </div>
                         </div>
                       </span>
+                      <span className="truncate">{channel.name}</span>
                     </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )
-            })
-          )} 
+            })}
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Button asChild variant="ghost" className="w-full justify-start mt-1">
+                  <Link href="/settings" className='w-full flex items-center gap-2'>
+                    <HugeiconsIcon icon={PlusSignIcon} className='size-4' />
+                    <span className="text-sm">More Channels</span>
+                  </Link>
+                </Button>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            </>
+            )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+         </SidebarGroup>  
       </SidebarContent>
+      <SidebarFooter>
+
+      </SidebarFooter>
     </Sidebar>
   );
 };
