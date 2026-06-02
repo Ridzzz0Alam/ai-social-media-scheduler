@@ -9,7 +9,7 @@ import { Calendar, CreditCard, Lightbulb, Plus, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getChannelIcon } from '@/constants/channels';
+import { getChannelIcon, getChannelUrl } from '@/constants/channels';
 import { ChannelType } from '@/types/channel.type';
 import { PlusSignIcon } from '@hugeicons/core-free-icons';
 import { UserButton } from '@clerk/nextjs';
@@ -85,7 +85,7 @@ const AppSidebar = () => {
          {/* //connected channels section */}
          {connectedChannels.length > 0 && ( 
           <SidebarGroup className={cn(isCollapsed && "px-1")}>
-          <SidebarGroupLabel>Connect Channels</SidebarGroupLabel>
+          <SidebarGroupLabel>Channels</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {isPending ? (
@@ -97,35 +97,25 @@ const AppSidebar = () => {
             </div>
           ) : (
             <>
-            {limitedChannels.map((channel: ChannelType) => {
-              const icon = getChannelIcon(channel.type)
+            {connectedChannels.map((channel: ChannelType) => {
+              const url = getChannelUrl(channel.type)
               return (
                 <SidebarMenuItem key={channel.id}>
-                  <SidebarMenuButton asChild
-                  tooltip={`Connect ${channel.name}`}
-                  >
-                    <button
+                  <SidebarMenuButton asChild>
+                    <a
+                    href={`${url}/${channel.handle}`}
+                    target='_blank' rel='noreferrer'
                     className='w-full flex items-center gap-2'
                     >
-                      <span className="text-[14.5px]">
-                        <div>
-                          {
-                            icon?(
-                              <HugeiconsIcon icon={icon} color="currentColor"
-                              className='text-white! size-6! p-1 rounded-sm'
-                              style={{background: channel.color}}
-                              />
-                            ) : null
-                          }
-                          <div className={`absolute -right-1 bottom-0 p-0.5
-                            bg-white dark:bg-background rounded-xs
-                            `}>
-                              <HugeiconsIcon icon={PlusSignIcon} className='size-2!' />
-                          </div>
-                        </div>
-                      </span>
-                      <span className="truncate">{channel.name}</span>
-                    </button>
+                      <ChannelAvatar 
+                      size="sm"
+                      className="w-full flex items-center gap-2"
+                      type={channel.type}
+                      color={channel.color}
+                      profileImage={channel.profileImage}
+                      name={!isCollapsed ? (channel.handle || channel.name) : ""}
+                      />
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )
