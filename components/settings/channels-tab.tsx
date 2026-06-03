@@ -5,6 +5,7 @@ import { Skeleton } from "../ui/skeleton";
 import { getChannelIcon } from "@/constants/channels";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@/lib/utils";
+import { PlusSignIcon } from "@hugeicons/core-free-icons";
 
 
 function ChannelsTabContent() {
@@ -63,13 +64,20 @@ function ChannelsTabContent() {
                                             <div className={cn(`absolute -right-1 bottom-0 p-0.5 bg-white dark:bg-background rounded-xs
                                                 `,
                                                 {
-                                                    "bg-green-500": channel.status === "connected",
-                                                    "bg-red-500": channel.status === "disconnected",
+                                                    "bg-transparent p-0 rounded-full -bottom-1 -right-0.5": channel.connected,
                                                 }
                                             )}>
-
+                                                {
+                                                    channel.connected ? (
+                                                        <div className="size-2.5 bg-primary rounded-full"/>
+                                                    ) : (
+                                                        <HugeiconsIcon icon={PlusSignIcon} className="size-2!"/>
+                                                    )
+                                                }
                                             </div>
                                         </span>
+
+                                        <span className="font-medium">{channel.name}</span>
                                     </div>
                                     <div className="h-8 w-20 bg-secondary"></div>
                                 </div>
