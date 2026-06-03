@@ -2,6 +2,9 @@ import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
+import { getChannelIcon } from "@/constants/channels";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { cn } from "@/lib/utils";
 
 
 function ChannelsTabContent() {
@@ -43,9 +46,35 @@ function ChannelsTabContent() {
                             </div>
                         ))
                     ) : (
-                        <>
+                        channels?.map((channel: any) => {
+                            const icon = getChannelIcon(channel.type)
+                            return (
+                                <div key={channel.id} 
+                                    className="flex items-center justify-between rounded-xl border p-4">
+                                    <div className="flex items-center gap-3">
+                                        <span>
+                                            {icon ? (
+                                                <HugeiconsIcon icon={icon}
+                                                color="currentColor"
+                                                className="text-white! size-6! p-1 rounded-sm"
+                                                style={{background: channel.color }}
+                                                />
+                                            ) : null}
+                                            <div className={cn(`absolute -right-1 bottom-0 p-0.5 bg-white dark:bg-background rounded-xs
+                                                `,
+                                                {
+                                                    "bg-green-500": channel.status === "connected",
+                                                    "bg-red-500": channel.status === "disconnected",
+                                                }
+                                            )}>
 
-                        </>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div className="h-8 w-20 bg-secondary"></div>
+                                </div>
+                            );
+                        })
                     )}
                 </div>
                 
