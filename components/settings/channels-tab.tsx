@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
 
 
 function ChannelsTabContent() {
@@ -32,10 +33,13 @@ function ChannelsTabContent() {
             <CardContent>
                 <div>
                     {isPending ? (
-                        Array.from({ length: 3 }).map((_, index) => (
-                            <div key={index} className="animate-pulse">
-                                <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
-                                <div className="h-3 bg-muted rounded w-1/2"></div>
+                        Array.from({ length: 6 }).map((_, index) => (
+                            <div key={index} className="flex items-center justify-between rounded-xl border p-4">
+                                <div className="flex items-center gap-3">
+                                    <Skeleton className="size-6 rounded-sm bg-secondary"/>
+                                    <Skeleton className="h-5 w-24 bg-secondary"/>
+                                </div>
+                               <Skeleton className="h-8 w-20 bg-secondary"/>
                             </div>
                         ))
                     ) : (
