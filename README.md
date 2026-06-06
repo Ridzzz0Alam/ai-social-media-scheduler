@@ -180,6 +180,8 @@ When a user creates a post with a future publish time:
 4. Post status is updated to `PUBLISHED` or `FAILED`
 5. Failed posts are automatically retried with exponential backoff
 
+![Workflow Diagram](https://raw.githubusercontent.com/Ridzzz0Alam/ai-social-media-scheduler/main/Workflow%20Diagram.jpg)
+
 ### Database schema
 
 | Table | Key fields |
