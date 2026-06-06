@@ -1,4 +1,4 @@
-# 📱 SocialFlow — AI-Powered Social Media Management
+# 📱 SocialFlow — AI-Powered Social Media Management (IN-PROGRESS)
 
 > A full-stack social media management platform built with Next.js, featuring AI-assisted content creation, multi-platform scheduling, and a visual kanban board for content ideation.
 
