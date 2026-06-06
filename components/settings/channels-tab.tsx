@@ -6,6 +6,7 @@ import { getChannelIcon } from "@/constants/channels";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@/lib/utils";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
+import { Button } from "../ui/button";
 
 
 function ChannelsTabContent() {
@@ -79,7 +80,12 @@ function ChannelsTabContent() {
 
                                         <span className="font-medium">{channel.name}</span>
                                     </div>
-                                    <div className="h-8 w-20 bg-secondary"></div>
+
+                                    <Button variant={channel.connected ? "default" : "outline"}
+                                    >
+                                        {{connectMutation.isPending && connectMutation}}
+                                        {channel.connected ? "Connected" : "Connect"}
+                                    </Button>
                                 </div>
                             );
                         })
