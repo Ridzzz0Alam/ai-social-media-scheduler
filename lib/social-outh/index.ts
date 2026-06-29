@@ -1,5 +1,6 @@
 import { ChannelTypeEnum } from "@/constants/channels"
 import { OAuthProvider } from "./types"
+import { refresh } from "next/cache"
 
 function getEnv(key: string) {
     const value =  process.env[key]
@@ -69,4 +70,33 @@ function createProvider(type: ChannelTypeEnum,opts: { pkce?: boolean} = {}): OAu
             return `${config.authUrl}?${params.toString()}`
         }
     }
+}
+
+const PROVIDERS: Record<ChannelTypeEnum, any> = {
+    [ChannelTypeEnum.TWITTER]: createProvider(ChannelTypeEnum.TWITTER,{ pkce: true }),
+    [ChannelTypeEnum.LINKEDIN]: createProvider(ChannelTypeEnum.LINKEDIN),
+    [ChannelTypeEnum.INSTAGRAM]: createProvider(ChannelTypeEnum.INSTAGRAM),
+    [ChannelTypeEnum.FACEBOOK]: createProvider(ChannelTypeEnum.FACEBOOK),
+    [ChannelTypeEnum.THREADS]: createProvider(ChannelTypeEnum.THREADS),
+    [ChannelTypeEnum.BLUESKY]: createProvider(ChannelTypeEnum.BLUESKY),
+    [ChannelTypeEnum.YOUTUBE]: createProvider(ChannelTypeEnum.YOUTUBE),
+    [ChannelTypeEnum.TIKTOK]: createProvider(ChannelTypeEnum.TIKTOK),
+}
+
+export function getProvider(type: ChannelTypeEnum){
+    return PROVIDERS[type]
+}
+
+export async function refreshOauthToken(
+  type:ChannelTypeEnum,
+  refreshToken:string,
+  redirectUri:string,
+){
+  console.log("refreshing token", type, refreshToken, redirectUri)
+  const provider = getOAuthProvider(type);
+  if(!provider.refreshToken){
+    throw new Error('Refresh token not supported for this provider');
+  }
+  const result = await provider.refreshToken({refreshToken, redirectUri});
+  return result;
 }
