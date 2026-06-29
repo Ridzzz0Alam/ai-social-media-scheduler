@@ -1,5 +1,6 @@
 
 "use client"
+
 import { Suspense,useState, useEffect } from 'react'
 import { toast } from 'sonner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -15,6 +16,7 @@ import { Button } from '../ui/button';
 import { Spinner } from '../ui/spinner';
 
 function ChannelTabContent() {
+    const [mounted, setMounted] = useState(false)
     const searchParams = useSearchParams()
     const queryClient = useQueryClient()
 
@@ -29,6 +31,7 @@ function ChannelTabContent() {
     const channels = (channelsData?.channels || []) as ChannelType[]
 
     useEffect(() => {
+        setMounted(true)
         const connected = searchParams.get("connected")
         const error = searchParams.get("error")
         const channelType = searchParams.get("channelType")
@@ -92,6 +95,9 @@ function ChannelTabContent() {
         if (!userChannelId) return
         if (disconnectMutation.isPending) return
         disconnectMutation.mutate(userChannelId)
+    }
+    if (!mounted) {
+        return null
     }
     return (
         <Card>
