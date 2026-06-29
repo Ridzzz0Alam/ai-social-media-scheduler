@@ -1,6 +1,5 @@
 import { ChannelTypeEnum } from "@/constants/channels"
 import { OAuthProvider } from "./types"
-import { refresh } from "next/cache"
 
 function getEnv(key: string) {
     const value =  process.env[key]
@@ -50,27 +49,109 @@ async function requestToekn(
 }
 
     
-function createProvider(type: ChannelTypeEnum,opts: { pkce?: boolean} = {}): OAuthProvider{
-    return {
-        type: "",
-        getAuthorizationUrl: () => {
-            const config = getConfig(type)
+function createProvider(type:ChannelTypeEnum,opts: { pkce?: boolean} = {}): OAuthProvider {
+   return {
+    type,
+    getAuthorizationUrl: ({state, redirectUri, codeChallenge, codeChallengeMethod}) => {
+       const config = getConfig(type)
+       // Build authorization URL with query parameters
+       const params = new URLSearchParams({
+         client_id: config.clientId,
+         redirect_uri: redirectUri,
+         response_type: 'code',
+         scope: config.scope.join(' '),
+         state,
+       })
+       if (opts.pkce && codeChallenge && codeChallengeMethod) {
+         params.append('code_challenge', codeChallenge)
+         params.append('code_challenge_method', codeChallengeMethod)
+       }
+       return `${config.authUrl}?${params.toString()}`
+    },
+    exchangeCodeForToken: async ({ code, redirectUri, codeVerifier }):Promise<OAuthTokenResponse> => {
+       const params = new URLSearchParams({
+         grant_type: 'authorization_code',
+         code,
+         redirect_uri: redirectUri,
+         client_id: getConfig(type).clientId,
+       })
 
-            // Build authorization URL with query paramters
-            const params = new URLSearchParams({
-                client_id: config.clientId,
-                redirect_uri: config.redirectUri,
-                response_type: "code",
-                scope: config.scope,
-            })
-            if(opts.pkce && codeChallenge && codeChallengeMethod){
-                params.append("code_challenge", codeChallenge)
-                params.append("code_challenge_method", codeChallengeMethod)
-            }
-            return `${config.authUrl}?${params.toString()}`
+       if(!opts.pkce){
+         params.append('client_secret', getConfig(type).clientSecret)
+       }
+       if(codeVerifier){
+         params.append('code_verifier', codeVerifier)
+       }
+
+       const data = await requestToken(type, params)
+
+       const seconds = Number(data.expires_in)
+       const expiresAt = seconds > 0 ? new Date(Date.now() + seconds * 1000).toISOString(): null
+
+       return {
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token ?? null,
+        expiresAt,
+       }
+      
+    },
+    refreshToken: async ({ refreshToken, redirectUri }) => {
+      const config = getConfig(type);
+      const params = new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+        client_id: config.clientId,
+      })
+
+      if(config.clientSecret){
+        params.append('client_secret', config.clientSecret)
+      }
+      if(redirectUri){
+        params.append('redirect_uri', redirectUri)
+      }
+
+      const data = await requestToken(type, params)
+      
+      const seconds = Number(data.expires_in)
+      const expiresAt = seconds > 0 ? new Date(Date.now() + seconds * 1000).toISOString(): null
+      
+      return {
+       accessToken: data.access_token,
+       refreshToken: data.refresh_token ?? null,
+       expiresAt,
+      }
+    },
+    getProfile: async ({ accessToken }) => {
+      const config = getConfig(type);
+      const response = await fetch(config.profileUrl,{
+        headers:{
+            Authorization: `Bearer ${accessToken}`,
+            Accept: 'application/json',
         }
-    }
+      })
+      if(!response.ok){
+        throw new Error('Failed to fetch profile')
+      }
+      const data = await response.json()
+
+      const profileData = data?.data ?? data?.user ?? data
+      const providerAccountId = profileData?.id ?? profileData?.sub ?? profileData?.user_id ?? null;
+      
+      const handle = profileData?.username ?? profileData?.screen_name ?? profileData?.handle  ?? profileData?.name ?? null;
+
+      const profileImage = profileData?.thread_profile_picture ?? profileData?.profile_image_url ?? profileData?.avatar_url ?? profileData?.profile_image ?? profileData?.picture?.data?.url ?? profileData?.picture?.url ?? profileData?.picture ?? null
+
+      console.log(providerAccountId, handle, "providerAccountId")
+     
+      return {
+        providerAccountId,
+        handle,
+        profileImage,
+      }
+    },
+   }
 }
+
 
 const PROVIDERS: Record<ChannelTypeEnum, any> = {
     [ChannelTypeEnum.TWITTER]: createProvider(ChannelTypeEnum.TWITTER,{ pkce: true }),
@@ -93,7 +174,7 @@ export async function refreshOauthToken(
   redirectUri:string,
 ){
   console.log("refreshing token", type, refreshToken, redirectUri)
-  const provider = getOAuthProvider(type);
+  const provider = geOAuthProvider(type);
   if(!provider.refreshToken){
     throw new Error('Refresh token not supported for this provider');
   }
