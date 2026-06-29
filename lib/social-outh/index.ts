@@ -1,5 +1,5 @@
 import { ChannelTypeEnum } from "@/constants/channels"
-import { OAuthProvider } from "./types"
+import { OAuthProvider, OAuthTokenResponse } from "./type"
 
 function getEnv(key: string) {
     const value =  process.env[key]
@@ -19,7 +19,7 @@ function getConfig(type:ChannelTypeEnum) {
 }
 
 
-async function requestToekn(
+async function requestToken(
     type: ChannelTypeEnum,
     body: URLSearchParams,
 ) {
@@ -29,9 +29,10 @@ async function requestToekn(
         Accept: 'application/json',
     }
 
-    if(type == ChannelTypeEnum.INSTAGRAM){
-        headers.Authorization = `Basic ${auth_header}`
-    }
+    if(type === ChannelTypeEnum.TWITTER && config.clientSecret){
+     const auth_header = Buffer.from(`${config.clientId}:${config.clientSecret}`).toString('base64')
+     headers.Authorization = `Basic ${auth_header}`
+  }
     
     const response = await fetch(config.tokenUrl, {
         method: 'POST',
@@ -164,7 +165,7 @@ const PROVIDERS: Record<ChannelTypeEnum, any> = {
     [ChannelTypeEnum.TIKTOK]: createProvider(ChannelTypeEnum.TIKTOK),
 }
 
-export function getProvider(type: ChannelTypeEnum){
+export function getOAuthProvider(type: ChannelTypeEnum){
     return PROVIDERS[type]
 }
 
@@ -174,7 +175,7 @@ export async function refreshOauthToken(
   redirectUri:string,
 ){
   console.log("refreshing token", type, refreshToken, redirectUri)
-  const provider = geOAuthProvider(type);
+  const provider = getOAuthProvider(type);
   if(!provider.refreshToken){
     throw new Error('Refresh token not supported for this provider');
   }
