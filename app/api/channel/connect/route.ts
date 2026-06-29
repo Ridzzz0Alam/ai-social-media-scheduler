@@ -1,5 +1,11 @@
+import { ChannelTypeEnum } from "@/constants/channels";
 import { getInsforgeServerClient } from "@/lib/insforge-server";
 import { NextResponse } from "next/server";
+import { getOAuthProvider } from "@/lib/oauth-providers";
+import { createAuthState } from "@/lib/auth-state";
+import { createPkcePair } from "@/lib/pkce";
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 
 export async function POST(request: Request) {
@@ -17,10 +23,33 @@ export async function POST(request: Request) {
         .eq("id", channelTypeId)
         .single();
         
-        if(error) return NextResponse.json({ error: "Channel type not found" }, { status: 404 });
-        
-        
-        return Response.json({ message: "Connected" });
+        if(error || !channelType) return NextResponse.json({ error: "Channel type not found" }, { status: 404 });
+  
+        const redirectTo = `${APP_URL}/settings`;
+
+        const provider = getOAuthProvider(channelType.type as ChannelTypeEnum);
+        const state = createAuthState({
+            userId,
+            channelTypeId: channelType.id,
+            channelType: channelType.type,
+            redirectTo,
+        })
+
+        const callbackUrl = `${APP_URL}/api/channel/callback`
+
+        const pkce = channelType.type === ChannelTypeEnum.TWITTER ? {
+        createPkcePair() 
+        : null
+
+        const url = provider.getAuthorizationUrl({
+            state,
+            callbackUrl,
+            pkce,
+        })
+
+
+        return response;
+
     } catch (error) {
         return Response.json({ message: "Error connecting" }, { status: 500 });
     }
