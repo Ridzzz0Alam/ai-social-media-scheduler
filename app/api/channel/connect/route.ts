@@ -43,10 +43,21 @@ export async function POST(request: Request) {
 
         const url = provider.getAuthorizationUrl({
             state,
-            callbackUrl,
-            pkce,
+            redirectUrl: callbackUrl,
+            codeChallenge: pkce?.codeChallenge,
+            codeChallengeMethod: pkce?.codeChallengeMethod,
         })
 
+        const response = NextResponse.json({url})
+
+        if(pkce) {
+            response.cookies.set(getPkceCookieName(state), pkce.codeVerifier, {
+                httpOnly: true,
+                secure: true,
+                path: "/",
+                maxAge: 60 * 10, // 10 minutes
+            })
+        }
 
         return response;
 
