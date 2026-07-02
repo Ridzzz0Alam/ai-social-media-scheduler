@@ -1,16 +1,18 @@
 import { ChannelTypeEnum } from "@/constants/channels"
 
+
 export type OAuthConnectionProfile = {
     providerAccountId?: string | null
-    handle?: string;
+    handle?: string
     profileImage?: string | null
 }
 
 export type OAuthTokenResponse = {
-    accessToken: string;
-    refreshToken?: string | null;
-    expiresAt?: string | null;
+    accessToken: string
+    refreshToken?: string | null
+    expiresAt?: string | null
 }
+
 
 export type OAuthProvider = {
     type: ChannelTypeEnum

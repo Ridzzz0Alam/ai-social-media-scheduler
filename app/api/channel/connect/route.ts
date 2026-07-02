@@ -1,9 +1,7 @@
 import { ChannelTypeEnum } from "@/constants/channels";
 import { getInsforgeServerClient } from "@/lib/insforge-server";
 import { NextResponse } from "next/server";
-import { getOAuthProvider } from "@/lib/oauth-providers";
-import { createAuthState } from "@/lib/auth-state";
-import { createPkcePair } from "@/lib/pkce";
+import { getOAuthProvider } from "@/lib/social-outh";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
